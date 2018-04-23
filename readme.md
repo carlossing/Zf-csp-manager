@@ -16,12 +16,12 @@ CSP es una medida de seguridad adoptada por los navegadores para mitigar los ata
 ```
 
 - Agregar en modules.config.php
-```
+```php
     'CspManager',
 ```
 
 
 - Agregar a todos los recuros script 
-```
+```php
     <script src="demo.js" nonce="<?= $this->cspCode ?>"></script>
 ```
