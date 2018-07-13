@@ -1,9 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: CSING
+ * User: Carlos Sing Ramos
  * Date: 23/04/2018
- * Time: 09:17 AM
+ * Time: 09:17 PM
  */
 
 namespace CspManager;
@@ -13,18 +12,30 @@ use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use CspManager\Listener\CspManagerListener;
 
+/**
+ * @licence MIT
+ * @author  Carlos Sing Ramos <carlossing@gmail.com>
+ */
+
 class Module implements BootstrapListenerInterface, ConfigProviderInterface
 {
 
     /**
      * Listen to the bootstrap event
      *
-     * @param EventInterface $e
+     * @param EventInterface $event
      * @return array
      */
-    public function onBootstrap(EventInterface $e)
+    public function onBootstrap(EventInterface $event)
     {
-        // TODO: Implement onBootstrap() method.
+        /* @var $application \Zend\Mvc\Application */
+        $application     = $event->getTarget();
+        $serviceManager  = $application->getServiceManager();
+        $eventManager    = $application->getEventManager();
+
+        /** @var CspManagerListener $listener */
+        $listener = $serviceManager->get(CspManagerListener::class);
+        $listener->attach($eventManager);
     }
 
     /**

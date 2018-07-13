@@ -8,11 +8,23 @@
 
 namespace CspManager\Listener;
 
+use CspManager\Service\CspService;
 use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Mvc\MvcEvent;
 
 class CspManagerListener extends AbstractListenerAggregate
 {
+    /**
+     * @var CspService
+     */
+    protected $cspService;
+
+    public function __construct($cspService)
+    {
+        $this->cspService = $cspService;
+    }
 
     /**
      * Attach one or more listeners
@@ -26,7 +38,21 @@ class CspManagerListener extends AbstractListenerAggregate
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {
-        // TODO: Implement attach() method.
+        $this->cspService->generateToken();
+
+        $this->listeners[] = $events->getSharedManager()->attach(AbstractActionController::class, 'dispatch', [$this, 'onCspDispatch'], 100);
 
     }
+
+    public function onCspDispatch(MvcEvent $event)
+    {
+
+        $cspHeaders = $this->cspService->getCspHeaders();
+        $head = $event->getResponse()->getHeaders()->addHeaders(['Content-Security-Policy' => $cspHeaders]);
+        $controller = $event->getTarget();
+        $controller->layout()->cspNonce = $this->cspService->getToken();
+
+    }
+
+
 }
