@@ -6,12 +6,14 @@ namespace CspManager\Options\Factory;
 
 use CspManager\Options\CspOptions;
 use CspManager\Service\CspService;
-use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\ContainerException;
+//use Interop\Container\ContainerInterface;
+//use Interop\Container\Exception\ContainerException;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
-use Zend\ServiceManager\Factory\FactoryInterface;
+//use Zend\ServiceManager\Factory\FactoryInterface;
 use CspManager\Listener\CspManagerListener;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 class CspOptionsFactory implements FactoryInterface
 {
@@ -28,10 +30,28 @@ class CspOptionsFactory implements FactoryInterface
      *     creating a service.
      * @throws ContainerException if any other error occurs
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+//    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+//    {
+//        /* @var $config array */
+//        $config = $container->has('config') ? $container->get('config') : [];
+//        $config = isset($config['csp-manager']) ? $config['csp-manager'] : [];
+//        return new CspOptions($config);
+//    }
+
+
+    /**
+     * Create service
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return mixed
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
     {
+        $container = $serviceLocator;
+
+//        var_dump($serviceLocator->get('config'));
         /* @var $config array */
-        $config = $container->has('config') ? $container->get('config') : [];
+        $config = $container->get('config');
         $config = isset($config['csp-manager']) ? $config['csp-manager'] : [];
         return new CspOptions($config);
     }

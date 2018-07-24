@@ -9,8 +9,10 @@ use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
-use Zend\ServiceManager\Factory\FactoryInterface;
+//use Zend\ServiceManager\Factory\FactoryInterface;
 use CspManager\Listener\CspManagerListener;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 class CspManagerListenerFactory implements FactoryInterface
 {
@@ -30,6 +32,20 @@ class CspManagerListenerFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $cspManagerService = $container->get(CspService::class);
+        $cspManagerListener = new CspManagerListener($cspManagerService);
+        return $cspManagerListener;
+    }
+
+
+    /**
+     * Create service
+     *
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return mixed
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $cspManagerService = $serviceLocator->get(CspService::class);
         $cspManagerListener = new CspManagerListener($cspManagerService);
         return $cspManagerListener;
     }
